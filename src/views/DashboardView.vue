@@ -9,6 +9,7 @@ import ErrorMessage from '../components/common/ErrorMessage.vue'
 import LoadingSpinner from '../components/common/LoadingSpinner.vue'
 import { useCategories } from '../composables/useCategories'
 import { getCashflow, getDashboardSummary, getExpensesByCategory, getRecentTransactions } from '../services/dashboardService'
+import { authState } from '../services/authSession'
 import type { CashflowItem, DashboardSummary, ExpenseCategory, Transaction } from '../types'
 import { getErrorMessage } from '../types'
 
@@ -47,7 +48,7 @@ onMounted(async () => {
 
 <template>
   <div class="dashboard-page">
-    <div class="page-heading"><div><span class="eyebrow">RINGKASAN KEUANGAN</span><h1>Selamat datang kembali, Aditya <span>👋</span></h1><p>Ini ringkasan keuanganmu untuk bulan {{ monthLabel }}.</p></div><RouterLink class="button button--primary" to="/transaksi"><span>＋</span> Tambah transaksi</RouterLink></div>
+    <div class="page-heading"><div><span class="eyebrow">RINGKASAN KEUANGAN</span><h1>Selamat datang kembali, {{ authState.user?.name || 'Pengguna' }} <span>👋</span></h1><p>Ini ringkasan keuanganmu untuk bulan {{ monthLabel }}.</p></div><RouterLink class="button button--primary" to="/transaksi"><span>＋</span> Tambah transaksi</RouterLink></div>
     <ErrorMessage v-if="error" :message="error" />
     <div v-if="loading" class="loading-state"><LoadingSpinner /><span>Mengambil data keuangan...</span></div>
     <template v-else>

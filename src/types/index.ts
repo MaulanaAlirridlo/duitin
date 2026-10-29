@@ -1,6 +1,14 @@
 export type EntityId = number | string
 export type TransactionType = 'income' | 'expense'
 
+export interface User {
+  id: EntityId
+  name: string
+  email: string
+  created_at: string
+  updated_at: string
+}
+
 export interface Category {
   id: EntityId
   name: string

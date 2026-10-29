@@ -1,3 +1,5 @@
+import { authState, clearAuthSession } from './authSession'
+
 const API_BASE_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '')
 
 interface Pagination {
@@ -12,13 +14,17 @@ interface CollectionResponse<T> {
 export async function request<T = unknown>(path: string, options: RequestInit = {}): Promise<T> {
   let response
   try {
+    const headers = new Headers(options.headers)
+    headers.set('Accept', 'application/json')
+    if (options.body && !headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json')
+    }
+    if (authState.token && !path.startsWith('/auth/')) {
+      headers.set('Authorization', `Bearer ${authState.token}`)
+    }
     response = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
-      headers: {
-        Accept: 'application/json',
-        ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-        ...options.headers,
-      },
+      headers,
     })
   } catch (error) {
     throw new Error(`Tidak dapat terhubung ke server ${API_BASE_URL}. Pastikan backend aktif di 127.0.0.1:8080.`, { cause: error })
@@ -35,6 +41,10 @@ export async function request<T = unknown>(path: string, options: RequestInit = 
   }
 
   if (!response.ok) {
+    if (response.status === 401 && authState.token && !path.startsWith('/auth/')) {
+      clearAuthSession()
+      window.dispatchEvent(new Event('duitin:auth-expired'))
+    }
     const apiError = data && typeof data === 'object' ? data as { error?: unknown; message?: unknown } : null
     const message = typeof apiError?.error === 'string'
       ? apiError.error

@@ -29,6 +29,12 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 npm install
 ```
 
+## Backend API
+
+The app uses the API in the sibling `API` folder. During development, Vite proxies `/api` to `http://127.0.0.1:8080`; set `VITE_API_URL` when the API is hosted at a different base URL.
+
+Users can sign in at `/login` or create an account at `/register`. After registration, the app signs in with the API and stores the JWT for authenticated category, transaction, dashboard, and current-user requests. The API must have its database and `JWT_SECRET` configured before the app can authenticate users.
+
 ### Compile and Hot-Reload for Development
 
 ```sh

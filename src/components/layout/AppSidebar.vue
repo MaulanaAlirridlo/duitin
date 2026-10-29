@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { authState } from '../../services/authSession'
 
 interface NavigationLink {
   to: string
@@ -29,8 +30,8 @@ const links: NavigationLink[] = [
       <RouterLink to="/transaksi">Mulai mencatat <span>→</span></RouterLink>
     </div>
     <div class="sidebar__profile">
-      <div class="avatar avatar--small">A</div>
-      <div><strong>Aditya Pratama</strong><span>Personal account</span></div>
+      <div class="avatar avatar--small">{{ authState.user?.name.trim().charAt(0).toUpperCase() || 'U' }}</div>
+      <div><strong>{{ authState.user?.name || 'Pengguna' }}</strong><span>{{ authState.user?.email || 'Akun personal' }}</span></div>
       <span class="sidebar__dots">···</span>
     </div>
   </aside>
